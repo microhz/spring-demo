@@ -1,18 +1,26 @@
 package com.micro.demo.spring.controller;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
 	@RequestMapping(value = "/upload",produces = "application/*")
+	@ResponseBody
 	public void uploadFile(@RequestParam("file") MultipartFile file) {
 		System.out.println(file);
 		try {
@@ -71,6 +80,20 @@ public class FileController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping("/download")
+	public ResponseEntity<byte[]> download(@RequestParam("fileId") String fileId) {
+		String filePath = "/Users/micro/Downloads/hosts.zip";
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		File file = new File(filePath);
+		try {
+			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), httpHeaders, HttpStatus.ACCEPTED);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

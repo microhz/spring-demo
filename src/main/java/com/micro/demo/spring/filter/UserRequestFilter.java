@@ -16,22 +16,20 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class UserRequestFilter implements Filter {
 
-	@Override
-	public void destroy() {
-
+	public void init(FilterConfig filterConfig) throws ServletException {
+		System.out.println(" filter init..");
+		
 	}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		String uri = httpServletRequest.getRequestURI();
-		System.out.println("get filter method .. " + uri);
+		System.out.println("do filter...");
 	}
 
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		System.out.println("filter init");
+	public void destroy() {
+		System.out.println("des");
 	}
+
+	
 
 }
