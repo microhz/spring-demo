@@ -1,5 +1,6 @@
 package com.micro.demo.spring;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("userBean")
 public class UserBean {
+	@Value("7")
 	private int status = 0;
 	public void test() {
 		System.out.println("user service test executed!! status = " + status);

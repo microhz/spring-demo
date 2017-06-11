@@ -15,7 +15,7 @@ public class PostProcessBeforeBean implements BeanPostProcessor {
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof UserBean) {
 			System.out.println("bean post method execute before invoke..");
-			((UserBean) bean).setStatus(1);
+//			((UserBean) bean).setStatus(1);
 			((UserBean) bean).test();
 		}
 		return bean;
@@ -24,7 +24,7 @@ public class PostProcessBeforeBean implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof UserBean) {
 			System.out.println("bean post method execute after invoke..");
-			((UserBean) bean).setStatus(2);
+//			((UserBean) bean).setStatus(2);
 			((UserBean) bean).test();
 		}
 		return bean;
