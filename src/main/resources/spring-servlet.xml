@@ -23,6 +23,8 @@
 	
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+	
+	<bean id="jsonpConvert" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
 
 	<!-- 扫描配置文件 -->
 	<!-- <bean id="propertyPlaceholderConfigurer"

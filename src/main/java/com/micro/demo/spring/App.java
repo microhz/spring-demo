@@ -29,7 +29,7 @@ public class App {
 	
 	
 	public static Map<Object,Object> constTree(int[][] arrays, Map<Object, Object> parentMap) {
-		Set<Integer> parentSet = new HashSet<Integer>();
+		/*Set<Integer> parentSet = new HashSet<Integer>();
 //		Map<Integer, Object> parentMap = new HashMap<Integer, Object>();
 		Map<Object,Object> newMap = new HashMap<Object, Object>();
 		for (int[] branch : arrays) {
@@ -40,7 +40,8 @@ public class App {
 				map.put(branch[0], dataList);
 				parentMap.
 			}
-		}
+		}*/
+		return null;
 	}
 	
 	public static List<Integer> getDataList(List<Integer> indexList, int[][] arrays) {
