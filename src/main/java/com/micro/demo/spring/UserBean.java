@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
  * @author mapc 
  * @date 2017年6月6日
  */
-@Component
+@Component("userBean")
 public class UserBean {
 	private int status = 0;
 	public void test() {

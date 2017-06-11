@@ -1,6 +1,8 @@
 package com.micro.demo.spring;
 
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.micro.demo.spring.service.UserService;
+
 /**
  * @author mapc
  * @date 2017年6月10日
@@ -16,6 +20,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 @Configuration
 @ImportResource("classpath:*.xml")
 public class ConfigBeanDefined {
+	
+	@Autowired
+	private List<UserService> userServiceList;
 	
 	@Autowired
 	private UserBean userBean;
@@ -35,13 +42,21 @@ public class ConfigBeanDefined {
 		userBean.test();
 	}
 	
-	/*public static void main(String[] args) {
+	@PostConstruct
+	public void testService() {
+		// 注入多个
+		for (UserService userService : userServiceList) {
+			userService.say(" hello...");
+		}
+	}
+	
+	public static void main(String[] args) {
 		AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
 		annotationConfigWebApplicationContext.setConfigLocation("com.micro.demo.spring");
 		annotationConfigWebApplicationContext.refresh();
 		User user = (User)annotationConfigWebApplicationContext.getBean("user");
 		System.out.println(user.getName() + user.getPassword());
-	}*/
+	}
 	
 }
 
