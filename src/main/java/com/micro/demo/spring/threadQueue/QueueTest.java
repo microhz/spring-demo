@@ -3,6 +3,8 @@ package com.micro.demo.spring.threadQueue;
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -49,10 +51,55 @@ public class QueueTest {
 			LinkedBlockingDeque：由链表结构组成的双向阻塞队列。
 		 */
 		// jdk7 主要提供了以上的阻塞队列
-		BlockingQueue<User> blockingQueue = new PriorityBlockingQueue<User>();
+		
+		
+		//  测试priorityBlockingQueue
+		/*BlockingQueue<User> blockingQueue = new PriorityBlockingQueue<User>();
 		// 去拿最小id的user执行
 		new Thread(new PutTask(blockingQueue)).start();
+		new Thread(new GetTask(blockingQueue)).start();*/
+		
+		// 测试 DelayQueue 延迟被执行，没超过delay设置的时间将不会被放到队列头里，返回null
+		
+		BlockingQueue<DelayTask> blockingQueue = new DelayQueue<DelayTask>();
+		new Thread(new PutTask(blockingQueue)).start();
 		new Thread(new GetTask(blockingQueue)).start();
+		
+	}
+	
+	// Delayed实现了比较接口 获得优先级支持
+	static class DelayTask implements Delayed {
+		
+		private Integer id;
+		
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		@Override
+		public int compareTo(Delayed o) {
+			// 两个具有Delayed能力的对象如果同时能够被获取的优先级
+			if (o instanceof DelayTask) {
+				DelayTask dt = (DelayTask) o;
+				return this.id > dt.getId() ? 1 : -1;
+			}
+			return 0;
+		}
+
+		@Override
+		public long getDelay(TimeUnit unit) {
+			// 延迟放入到队列头部的时间
+			return unit.toSeconds(3);
+		}
+
+		@Override
+		public String toString() {
+			return "DelayTask [id=" + id + "]";
+		}
 	}
 	
 	public static class User implements Comparable<User> {
@@ -77,8 +124,8 @@ public class QueueTest {
 	
 	// --- 模拟阻塞队列的拿线程
 	public static class GetTask implements Runnable {
-		BlockingQueue<User> blockingQueue;
-		public GetTask(BlockingQueue<User> blockingQueue) {
+		BlockingQueue<DelayTask> blockingQueue;
+		public GetTask(BlockingQueue<DelayTask> blockingQueue) {
 			this.blockingQueue = blockingQueue;
 		}
 		@Override
@@ -89,10 +136,10 @@ public class QueueTest {
 				System.out.println("-----------");
 				try {
 					System.out.println(curName + " start to get..");
-					Thread.sleep(1000);
-					User o = blockingQueue.take();
+					Thread.sleep(5000);
+					DelayTask dt = blockingQueue.take();
 //					Object o = blockingQueue.poll(); // 可以去拿，拿不到也不阻塞
-					System.out.println(curName + "got a user : id " + o.getId());
+					System.out.println(curName + "got a delayTask : id " + dt.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -103,8 +150,8 @@ public class QueueTest {
 	
 	// --- 模拟阻塞线程的放线程
 	public static class PutTask implements Runnable {
-		BlockingQueue<User> blockingQueue;
-		public PutTask(BlockingQueue<User> blockingQueue) {
+		BlockingQueue<DelayTask> blockingQueue;
+		public PutTask(BlockingQueue<DelayTask> blockingQueue) {
 			this.blockingQueue = blockingQueue;
 		}
 		@Override
@@ -112,16 +159,18 @@ public class QueueTest {
 			String curName = Thread.currentThread().getName();
 			Random r = new Random();
 			while (true) {
-				// 每0.5放一个
+				// 每1秒放一个
 				System.out.println("-----------");
 				try {
 					System.out.println(curName + " start to put..");
-					Thread.sleep(300);
-					User user = new User();
-					user.setId(r.nextInt(1000));
-					blockingQueue.put(user);
+					Thread.sleep(1000); // 
+					/*User user = new User();
+					user.setId(r.nextInt(1000));*/
+					DelayTask dt = new DelayTask();
+					dt.setId(r.nextInt(1000));
+					blockingQueue.put(dt);
 //					boolean isPut = blockingQueue.offer(new Object());  // 可以去放，放不进去也不阻塞 ,可以通过设置拿和取的时间验证
-					System.out.println(curName + "had put user , queue : " + blockingQueue);
+					System.out.println(curName + "had put delayTask , queue : " + blockingQueue);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
