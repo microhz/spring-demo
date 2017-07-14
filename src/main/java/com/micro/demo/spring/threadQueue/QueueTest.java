@@ -8,6 +8,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -61,10 +62,14 @@ public class QueueTest {
 		
 		// 测试 DelayQueue 延迟被执行，没超过delay设置的时间将不会被放到队列头里，返回null
 		
-		BlockingQueue<DelayTask> blockingQueue = new DelayQueue<DelayTask>();
+		/*BlockingQueue<DelayTask> blockingQueue = new DelayQueue<DelayTask>();
+		new Thread(new PutTask(blockingQueue)).start();
+		new Thread(new GetTask(blockingQueue)).start();*/
+		
+		// 不存储元素的队列
+		BlockingQueue<Object> blockingQueue = new SynchronousQueue<>(); 
 		new Thread(new PutTask(blockingQueue)).start();
 		new Thread(new GetTask(blockingQueue)).start();
-		
 	}
 	
 	// Delayed实现了比较接口 获得优先级支持
@@ -124,22 +129,21 @@ public class QueueTest {
 	
 	// --- 模拟阻塞队列的拿线程
 	public static class GetTask implements Runnable {
-		BlockingQueue<DelayTask> blockingQueue;
-		public GetTask(BlockingQueue<DelayTask> blockingQueue) {
+		BlockingQueue<Object> blockingQueue;
+		public GetTask(BlockingQueue<Object> blockingQueue) {
 			this.blockingQueue = blockingQueue;
 		}
 		@Override
 		public void run() {
 			String curName = Thread.currentThread().getName();
 			while (true) {
-				// 每秒拿一个
 				System.out.println("-----------");
 				try {
 					System.out.println(curName + " start to get..");
-					Thread.sleep(5000);
-					DelayTask dt = blockingQueue.take();
+					Thread.sleep(3000);
+					Object o = blockingQueue.take();
 //					Object o = blockingQueue.poll(); // 可以去拿，拿不到也不阻塞
-					System.out.println(curName + "got a delayTask : id " + dt.getId());
+					System.out.println(curName + "got a o : " + o);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -150,8 +154,8 @@ public class QueueTest {
 	
 	// --- 模拟阻塞线程的放线程
 	public static class PutTask implements Runnable {
-		BlockingQueue<DelayTask> blockingQueue;
-		public PutTask(BlockingQueue<DelayTask> blockingQueue) {
+		BlockingQueue<Object> blockingQueue;
+		public PutTask(BlockingQueue<Object> blockingQueue) {
 			this.blockingQueue = blockingQueue;
 		}
 		@Override
@@ -159,18 +163,17 @@ public class QueueTest {
 			String curName = Thread.currentThread().getName();
 			Random r = new Random();
 			while (true) {
-				// 每1秒放一个
 				System.out.println("-----------");
 				try {
 					System.out.println(curName + " start to put..");
 					Thread.sleep(1000); // 
 					/*User user = new User();
 					user.setId(r.nextInt(1000));*/
-					DelayTask dt = new DelayTask();
-					dt.setId(r.nextInt(1000));
-					blockingQueue.put(dt);
+					/*DelayTask dt = new DelayTask();
+					dt.setId(r.nextInt(1000));*/
+					blockingQueue.put(new Object());
 //					boolean isPut = blockingQueue.offer(new Object());  // 可以去放，放不进去也不阻塞 ,可以通过设置拿和取的时间验证
-					System.out.println(curName + "had put delayTask , queue : " + blockingQueue);
+					System.out.println(curName + "had put o , queue : " + blockingQueue);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
