@@ -12,7 +12,7 @@ public enum TradeTypeEnum {
 	BALANCE_UNDER(3, "资金下拨"),
 	CHARGE(4, "账户充值"),
 	WITHDRAW(5,"账户提现"),
-	PAY_TO_BANK(6,"付款到银行"),
+	PAY_TO_BANK(6,"付款到银行账户"),
 	PAY_GATEWAY(7,"支付到网关"),
 	REFUND(8, "退款"),
 	GATEWAY_REFUND(9,"支付网关退款"),
