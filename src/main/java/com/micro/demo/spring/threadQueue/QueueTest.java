@@ -196,6 +196,5 @@ public class QueueTest {
 				e.printStackTrace();
 			}
 		}
-		
 	}
 }
