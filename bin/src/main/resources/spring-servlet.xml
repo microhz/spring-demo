@@ -32,8 +32,6 @@
 		<property name="locations"
 			value="file:${user.dir}/config/master-slave.properties" />
 	</bean> -->
-	<context:property-placeholder location="classpath:config.propeties"/>
-	
 
 	<!-- mvc的注解驱动 -->
 	<mvc:annotation-driven />

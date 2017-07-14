@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import com.micro.demo.spring.beans.Son;
 import com.micro.demo.spring.service.UserService;
 
 /**
@@ -18,11 +19,14 @@ import com.micro.demo.spring.service.UserService;
  * @date 2017年6月10日
  */
 @Configuration
-@ImportResource("classpath:*.xml")
+//@ImportResource("classpath:*.xml")
 public class ConfigBeanDefined {
 	
 	@Autowired
 	private List<UserService> userServiceList;
+	
+	@Autowired
+	private Son son;
 	
 	@Autowired
 	private UserBean userBean;
@@ -56,6 +60,11 @@ public class ConfigBeanDefined {
 		annotationConfigWebApplicationContext.refresh();
 		User user = (User)annotationConfigWebApplicationContext.getBean("user");
 		System.out.println(user.getName() + user.getPassword());
+	}
+	
+	@PostConstruct
+	public void testInitBeanValue() {
+		System.out.println("son ref father's name : " + son.getName());
 	}
 	
 }
