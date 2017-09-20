@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Condition;
  */
 public class ThreadTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		/*
 		 * ExecutorService executor = Executors.newCachedThreadPool();
 		 * CompletionService<String> completionService = new
@@ -32,20 +32,51 @@ public class ThreadTest {
 		 * (InterruptedException e) { e.printStackTrace(); }
 		 */
 
-		int[] iArray = new int[52];
-		for (int i = 0; i < 52; i++) {
-			iArray[i] = i + 1;
-		}
+		/*
+		 * int[] iArray = new int[52]; for (int i = 0; i < 52; i++) { iArray[i]
+		 * = i + 1; }
+		 * 
+		 * String[] sArray = new String[26]; int start = (int) 'a'; for (int i =
+		 * 0; i < 26; i++) { sArray[i] = String.valueOf((char) (start + i)); }
+		 * 
+		 * StringBuilder sb = new StringBuilder(); new Thread(new
+		 * NumberPrinter(sb, iArray)).start(); new Thread(new StringPrinter(sb,
+		 * sArray)).start();
+		 */
 
-		String[] sArray = new String[26];
-		int start = (int) 'a';
-		for (int i = 0; i < 26; i++) {
-			sArray[i] = String.valueOf((char) (start + i));
-		}
+		MyRun myRun = new MyRun(false);
+		new Thread(myRun).start();
+		Thread.sleep(1000);// 等待线程执行
+		myRun.setStop(true);
+	}
+	
+	
+	public static class MyRun implements Runnable {
+		
+		private boolean stop;
 
-		StringBuilder sb = new StringBuilder();
-		new Thread(new NumberPrinter(sb, iArray)).start();
-		new Thread(new StringPrinter(sb, sArray)).start();
+		MyRun(boolean status) {
+			this.stop = status;
+		}
+		@Override
+		public void run() {
+			while(!stop) {
+				System.out.println("running");
+			}
+			System.out.println("stop");
+		}
+		public boolean isStop() {
+			return stop;
+		}
+		public void setStop(boolean stop) {
+			this.stop = stop;
+		}
+	}
+
+	public void s1() {
+		int i = 0;
+		i++;
+		System.out.println(i);
 	}
 
 	/**
@@ -140,14 +171,15 @@ public class ThreadTest {
 		}
 
 		private Integer count = 0;
+
 		@Override
 		public void run() {
 			Thread t1 = new Thread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					if (count / 10 % 2 == 1) {
-						
+
 					}
 				}
 			});
